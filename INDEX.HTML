@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SpaceFoX</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Arial', sans-serif;
+      color: white;
+      background-size: cover;
+      background-position: center;
+      overflow: hidden;
+      transition: background-image 1s ease-in-out;
+    }
+
+    .search-container {
+      display: flex;
+      align-items: center;
+      width: 600px;
+      max-width: 90%;
+      position: relative;
+      opacity: 0;
+      animation: fadeIn 1.5s forwards;
+    }
+
+    .search-box {
+      flex: 1;
+      padding: 12px 20px 12px 50px;
+      font-size: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 25px;
+      background: rgba(255, 255, 255, 0.1);
+      color: black;
+      outline: none;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      transition: box-shadow 0.3s;
+    }
+
+    .search-box:focus {
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+
+    .engine-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+    }
+
+    .engine-dropdown {
+      position: absolute;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 5px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      display: none;
+      z-index: 10;
+      left: 10px;
+      top: 50px;
+    }
+
+    .engine-dropdown div {
+      padding: 10px 20px;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+
+    .engine-dropdown div img {
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
+    }
+
+    .engine-dropdown div:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .service-icons {
+      margin-top: 25px;
+      display: flex;
+      gap: 20px;
+    }
+
+    .service-icons img {
+      width: 32px;
+      height: 32px;
+      transition: transform 0.2s;
+    }
+
+    .service-icons img:hover {
+      transform: scale(1.2);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+      .search-container {
+        width: 90%;
+      }
+
+      .search-box {
+        font-size: 14px;
+        padding: 10px 15px 10px 45px;
+      }
+
+      .engine-icon {
+        width: 20px;
+        height: 20px;
+        left: 10px;
+      }
+
+      .engine-dropdown {
+        top: 40px;
+        left: 5px;
+        font-size: 14px;
+      }
+
+      .service-icons img {
+        width: 28px;
+        height: 28px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .search-box {
+        font-size: 13px;
+        padding: 10px 10px 10px 40px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="search-container">
+    <img src="https://www.google.com/favicon.ico" class="engine-icon" id="engineIcon" alt="Search Engine Icon">
+    <input type="text" class="search-box" id="searchInput" placeholder="Search the web..." autofocus>
+    <div class="engine-dropdown" id="engineDropdown">
+      <div onclick="changeEngine('google')"><img src="https://www.google.com/favicon.ico" alt="Google"> Google</div>
+      <div onclick="changeEngine('bing')"><img src="https://www.bing.com/favicon.ico" alt="Bing"> Bing</div>
+      <div onclick="changeEngine('duckduckgo')"><img src="https://duckduckgo.com/favicon.ico" alt="DuckDuckGo"> DuckDuckGo</div>
+      <div onclick="changeEngine('yahoo')"><img src="https://s.yimg.com/rz/l/favicon.ico" alt="Yahoo"> Yahoo</div>
+      <div onclick="changeEngine('weather')"><img src="https://www.pngall.com/wp-content/uploads/11/Weather-PNG-Image-HD.png" alt="Weather"> Weather</div>
+      <div onclick="changeEngine('youtube')"><img src="data:image/png;base64,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" alt="YouTube"> YouTube</div>
+      <div onclick="changeEngine('facebook')"><img src="https://www.facebook.com/favicon.ico" alt="Facebook"> Facebook</div>
+      <div onclick="changeEngine('linkedin')"><img src="https://static.licdn.com/scds/common/u/images/logos/favicons/v1/favicon.ico" alt="LinkedIn"> LinkedIn</div>
+    </div>
+  </div>
+
+  <div class="service-icons">
+    <a href="https://www.youtube.com" target="_blank"><img src="data:image/png;base64,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" alt="YouTube"></a>
+    <a href="https://www.facebook.com" target="_blank"><img src="https://www.facebook.com/favicon.ico" alt="Facebook"></a>
+    <a href="https://www.linkedin.com" target="_blank"><img src="https://static.licdn.com/scds/common/u/images/logos/favicons/v1/favicon.ico" alt="LinkedIn"></a>
+    <a href="https://weather.com" target="_blank"><img src="data:image/jpeg;base64,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" alt="Weather"></a>
+    <a href="https://www.yahoo.com" target="_blank"><img src="https://s.yimg.com/rz/l/favicon.ico" alt="Yahoo"></a>
+  </div>
+
+  <script>
+    const backgrounds = [
+      'https://images.unsplash.com/photo-1507525428034-b723cf961d3e',
+      'https://images.unsplash.com/photo-1511300636408-a54c95b7890c',
+      'https://images.unsplash.com/photo-1440404653325-ab127d49abc1',
+      'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
+      'https://images.unsplash.com/photo-1472214103451-9374f2f6a2e7',
+      'https://images.unsplash.com/photo-1508739773434-c26b3d09e071',
+      'https://images.unsplash.com/photo-1519681393784-d120267933ba',
+      'https://images.unsplash.com/photo-1486915309851-b3fbe48c1659',
+      'https://images.unsplash.com/photo-1497436072909-60f69c88b5b1',
+      'https://images.unsplash.com/photo-1501854140801-50d0162c44d8'
+    ];
+
+    let currentBgIndex = 0;
+    let currentEngine = 'google';
+
+    function changeBackground() {
+      document.body.style.backgroundImage = `url(${backgrounds[currentBgIndex]})`;
+      currentBgIndex = (currentBgIndex + 1) % backgrounds.length;
+    }
+
+    changeBackground();
+    setInterval(changeBackground, 10800000); // Every 3 hours
+
+    const searchInput = document.getElementById('searchInput');
+    const engineIcon = document.getElementById('engineIcon');
+    const engineDropdown = document.getElementById('engineDropdown');
+
+    engineIcon.addEventListener('click', (e) => {
+      e.stopPropagation();
+      engineDropdown.style.display = engineDropdown.style.display === 'block' ? 'none' : 'block';
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!engineIcon.contains(e.target) && !engineDropdown.contains(e.target)) {
+        engineDropdown.style.display = 'none';
+      }
+    });
+
+    window.changeEngine = function(engine) {
+      currentEngine = engine;
+      engineIcon.src = {
+        google: 'https://www.google.com/favicon.ico',
+        bing: 'https://www.bing.com/favicon.ico',
+        duckduckgo: 'https://duckduckgo.com/favicon.ico',
+        yahoo: 'https://s.yimg.com/rz/l/favicon.ico',
+        weather: 'https://ssl.gstatic.com/onebox/weather/64/cloudy.png',
+        youtube: 'https://www.youtube.com/s/desktop/62293f96/img/favicon.ico',
+        facebook: 'https://www.facebook.com/favicon.ico',
+        linkedin: 'https://static.licdn.com/scds/common/u/images/logos/favicons/v1/favicon.ico'
+      }[engine];
+      engineDropdown.style.display = 'none';
+      searchInput.focus();
+    };
+
+    searchInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && searchInput.value.trim() !== '') {
+        const query = encodeURIComponent(searchInput.value.trim());
+        const searchUrls = {
+          google: `https://www.google.com/search?q=${query}`,
+          bing: `https://www.bing.com/search?q=${query}`,
+          duckduckgo: `https://duckduckgo.com/?q=${query}`,
+          yahoo: `https://search.yahoo.com/search?p=${query}`,
+          weather: `https://www.google.com/search?q=weather+${query}`,
+          youtube: `https://www.youtube.com/results?search_query=${query}`,
+          facebook: `https://www.facebook.com/search/top?q=${query}`,
+          linkedin: `https://www.linkedin.com/search/results/all/?keywords=${query}`
+        };
+        window.open(searchUrls[currentEngine], '_blank');
+        searchInput.value = '';
+      }
+    });
+  </script>
+</body>
+</html>
